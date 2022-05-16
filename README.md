@@ -1,6 +1,8 @@
 # Purpose
 Onscreen Keyboard is written in TypeScript designed for a particular use-case I ran into while producing a web-app designed to be run on a public Kiosk. For security reasons, rather than using the OS onscreen keyboard, we produced a sandboxed keyboard for filling out forms in our system
 
+![screenshot](./keyboard%20screenshot.png)
+
 # Usage
 ## Add to your project
 To add the keyboard to a project add the /build folder to your project and add
