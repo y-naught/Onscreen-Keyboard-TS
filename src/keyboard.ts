@@ -69,7 +69,7 @@ export default class Keyboard{
         let u = new Key('u', '7', 1, 'letter', this.dom, this);
         let i = new Key('i', '8', 1, 'letter', this.dom, this);
         let o = new Key('o', '9', 1, 'letter', this.dom, this);
-        let p = new Key('p', '_', 1, 'letter', this.dom, this);
+        let p = new Key('p', '0', 1, 'letter', this.dom, this);
         let del = new Key('del', 'null', 2, 'delete', this.dom, this);
 
         rows[0].appendChild(q.getKey()); 
@@ -101,7 +101,6 @@ export default class Keyboard{
         let j = new Key('j', '&', 1, 'letter', this.dom, this);
         let k = new Key('k', '*', 1, 'letter', this.dom, this);
         let l = new Key('l', '/', 1, 'letter', this.dom, this);
-        //let ret = new Key('q', '1', 1, 'return', this.dom, this);
         
         rows[1].appendChild(a.getKey());
         rows[1].appendChild(s.getKey());
@@ -112,7 +111,6 @@ export default class Keyboard{
         rows[1].appendChild(j.getKey());
         rows[1].appendChild(k.getKey());
         rows[1].appendChild(l.getKey());
-        //rows[1].appendChild(ret);
 
         const rowTwoObjects = [a,s,d,f,g,h,j,k,l];
         rowTwoObjects.forEach((key) => {
@@ -129,7 +127,7 @@ export default class Keyboard{
         let b = new Key('b', '(', 1, 'letter', this.dom, this);
         let n = new Key('n', ')', 1, 'letter', this.dom, this);
         let m = new Key('m', ',', 1, 'letter', this.dom, this);
-        let dot = new Key('.', '.', 1, 'letter', this.dom, this);
+        let dot = new Key('.', '_', 1, 'letter', this.dom, this);
         let rShft = new Key('shift', 'null', 2, 'shift', this.dom, this);
 
         rows[2].appendChild(lShft.getKey());
@@ -140,7 +138,6 @@ export default class Keyboard{
         rows[2].appendChild(b.getKey());
         rows[2].appendChild(n.getKey());
         rows[2].appendChild(m.getKey());
-        // rows[2].appendChild(com);
         rows[2].appendChild(dot.getKey());
         rows[2].appendChild(rShft.getKey());
 
@@ -202,6 +199,13 @@ export default class Keyboard{
         }
     }
 
+    // called by a key when it has been pressed, so that shift only holds for one key stroke
+    keyPressed(){
+        if(this.shiftToggle){
+            this.toggleShift();
+        }
+    }
+
     // returns the number of rows in our keyboard, important for calculating size of keys
     getNumRows(){
         return this.numRows;
@@ -228,8 +232,6 @@ export default class Keyboard{
         this.container.style.transitionProperty = 'opacity';
         this.container.style.transitionDuration = '1.0';
     }
-
-
 }
 
 // key object will be created for each key in the keyboard class
@@ -301,6 +303,7 @@ class Key {
                 let newVal = this.inputTarget.value + this.altText;
                 this.inputTarget.value = newVal;
             }
+            this.sendKeyPressed();
         }else{
             console.log("no input target selected!");
         }
@@ -308,9 +311,8 @@ class Key {
 
     // used exclusively for the delete key
     removeLastVal(){
-        if(this.inputTarget){
-            if(this.inputTarget.value.length > 0)
-                this.inputTarget.value = this.inputTarget.value.substring(0, this.inputTarget.value.length - 1);
+        if(this.inputTarget && this.inputTarget.value.length > 0){
+            this.inputTarget.value = this.inputTarget.value.substring(0, this.inputTarget.value.length - 1);
         }
     }
 
@@ -330,10 +332,10 @@ class Key {
 
     // called when toggling the special character layout key
     toggleText(){
-        if(!this.altKey && this.keyType == 'letter'){
+        if(!this.altKey && (this.keyType == 'letter' || this.keyType == 'toggle')){
             this.keyText.innerHTML = this.altText;
             this.altKey = true;
-        }else if(this.keyType == 'letter'){
+        }else if(this.keyType == 'letter' || this.keyType == 'toggle'){
             this.keyText.innerHTML = this.text;
             this.altKey = false;
         }
@@ -358,6 +360,12 @@ class Key {
     sendToggleLayout(){
         if(this.keyType == 'toggle'){
             this.parent.toggleLayout();
+        }
+    }
+
+    sendKeyPressed(){
+        if(this.keyType != 'shift' && this.keyType != 'toggle'){
+            this.parent.keyPressed();
         }
     }
 

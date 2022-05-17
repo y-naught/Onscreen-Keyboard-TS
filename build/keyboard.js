@@ -45,7 +45,7 @@ export default class Keyboard {
         let u = new Key('u', '7', 1, 'letter', this.dom, this);
         let i = new Key('i', '8', 1, 'letter', this.dom, this);
         let o = new Key('o', '9', 1, 'letter', this.dom, this);
-        let p = new Key('p', '_', 1, 'letter', this.dom, this);
+        let p = new Key('p', '0', 1, 'letter', this.dom, this);
         let del = new Key('del', 'null', 2, 'delete', this.dom, this);
         rows[0].appendChild(q.getKey());
         rows[0].appendChild(w.getKey());
@@ -98,7 +98,7 @@ export default class Keyboard {
         let b = new Key('b', '(', 1, 'letter', this.dom, this);
         let n = new Key('n', ')', 1, 'letter', this.dom, this);
         let m = new Key('m', ',', 1, 'letter', this.dom, this);
-        let dot = new Key('.', '.', 1, 'letter', this.dom, this);
+        let dot = new Key('.', '_', 1, 'letter', this.dom, this);
         let rShft = new Key('shift', 'null', 2, 'shift', this.dom, this);
         rows[2].appendChild(lShft.getKey());
         rows[2].appendChild(z.getKey());
@@ -161,6 +161,12 @@ export default class Keyboard {
                 key.toggleKeyCase();
             });
             this.shiftToggle = false;
+        }
+    }
+    // called by a key when it has been pressed, so that shift only holds for one key stroke
+    keyPressed() {
+        if (this.shiftToggle) {
+            this.toggleShift();
         }
     }
     // returns the number of rows in our keyboard, important for calculating size of keys
@@ -249,6 +255,7 @@ class Key {
                 let newVal = this.inputTarget.value + this.altText;
                 this.inputTarget.value = newVal;
             }
+            this.sendKeyPressed();
         }
         else {
             console.log("no input target selected!");
@@ -256,9 +263,8 @@ class Key {
     }
     // used exclusively for the delete key
     removeLastVal() {
-        if (this.inputTarget) {
-            if (this.inputTarget.value.length > 0)
-                this.inputTarget.value = this.inputTarget.value.substring(0, this.inputTarget.value.length - 1);
+        if (this.inputTarget && this.inputTarget.value.length > 0) {
+            this.inputTarget.value = this.inputTarget.value.substring(0, this.inputTarget.value.length - 1);
         }
     }
     // called when hitting the shift key
@@ -277,11 +283,11 @@ class Key {
     }
     // called when toggling the special character layout key
     toggleText() {
-        if (!this.altKey && this.keyType == 'letter') {
+        if (!this.altKey && (this.keyType == 'letter' || this.keyType == 'toggle')) {
             this.keyText.innerHTML = this.altText;
             this.altKey = true;
         }
-        else if (this.keyType == 'letter') {
+        else if (this.keyType == 'letter' || this.keyType == 'toggle') {
             this.keyText.innerHTML = this.text;
             this.altKey = false;
         }
@@ -304,6 +310,11 @@ class Key {
     sendToggleLayout() {
         if (this.keyType == 'toggle') {
             this.parent.toggleLayout();
+        }
+    }
+    sendKeyPressed() {
+        if (this.keyType != 'shift' && this.keyType != 'toggle') {
+            this.parent.keyPressed();
         }
     }
     calcWidth() {
