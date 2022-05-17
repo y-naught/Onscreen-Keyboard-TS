@@ -1,5 +1,5 @@
 # Purpose
-Onscreen Keyboard is written in TypeScript designed for a particular use-case I ran into while producing a web-app designed to be run on a public Kiosk. For security reasons, rather than using the OS onscreen keyboard, we produced a sandboxed keyboard for filling out forms in our system
+Onscreen Keyboard is written in TypeScript designed for a particular use-case I ran into while producing a web-app designed to be run on a public Kiosk. For security reasons, rather than using the OS onscreen keyboard, we produced a sandboxed keyboard for filling out forms in our system.
 
 ![screenshot](./keyboard%20screenshot.png)
 
@@ -31,13 +31,13 @@ will set where the output of the keyboard goes, you must pass a HTML Text Input 
 ### Recompile TypeScript code
 The Typescript build folder is included in this respository, but you may want to make modifications to this system, whether that be the key layout or a using a different language.
 
-After you have made modifications you'll have to use the typescript compiler to create your new build file.
+After you have made your modifications you'll have to use the typescript compiler to create your new build file.
 
 If you don't yet have typescript installed on you system run this in terminal
 
 `npm install -g typescript`
 
-Now you can navigate to root directory of the project where you can simply type 
+Now you can navigate to the root directory of the project where you can simply type 
 
 `tsc` in the terminal.
 
